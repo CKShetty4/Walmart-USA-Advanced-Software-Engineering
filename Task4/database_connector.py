@@ -37,6 +37,12 @@ class DatabaseConnector:
 
     def insert_product_if_it_does_not_already_exist(self, product_name):
         """Insert a new product into the database. If a product already exists in the database with the given name, ignore it."""
+        query = """
+                INSERT OR IGNORE INTO product (name)
+                VALUES (?);
+            """
+        self.cursor.execute(query, (product_name,))
+        self.connection.commit()
     
     def insert_shipment(self, product_name, product_quantity, origin, destination):
         """Insert a new shipment into the database."""
