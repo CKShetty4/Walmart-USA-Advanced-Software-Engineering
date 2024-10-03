@@ -22,7 +22,7 @@ class DatabaseConnector:
                     # populate first spreadsheet
                     self.populate_first_shipping_data(csv_reader_0)
                     self.populate_second_shipping_data(csv_reader_1, csv_reader_2)
-    
+
     def populate_first_shipping_data(self, csv_reader_0):
         """Populate the database with data imported from the first spreadsheet."""
         for row_index, row in enumerate(csv_reader_0):
@@ -41,34 +41,6 @@ class DatabaseConnector:
                 # give an indication of progress
                 print(f"inserted product {row_index} from shipping_data_0")
 
-    def insert_product_if_it_does_not_already_exist(self, product_name):
-        """Insert a new product into the database. If a product already exists in the database with the given name, ignore it."""
-        query = """
-                INSERT OR IGNORE INTO product (name)
-                VALUES (?);
-            """
-        self.cursor.execute(query, (product_name,))
-        self.connection.commit()
-    
-    def insert_shipment(self, product_name, product_quantity, origin, destination):
-        """Insert a new shipment into the database."""
-        # collect the product id
-        query = """
-                SELECT id
-                FROM product
-                WHERE product.name = ?;
-            """
-        self.cursor.execute(query, (product_name,))
-        product_id = self.cursor.fetchone()[0]
-
-        # insert the shipment
-        query = """
-            INSERT INTO shipment (product_id, quantity, origin, destination)
-            VALUES (?, ?, ?, ?);
-            """
-        self.cursor.execute(query, (product_id, product_quantity, origin, destination))
-        self.connection.commit()
-
     def populate_second_shipping_data(self, csv_reader_1, csv_reader_2):
         """Populate the database with data imported from the second and third spreadsheets."""
         # collect shipment info
@@ -82,7 +54,7 @@ class DatabaseConnector:
                 destination = row[2]
 
                 # store them for later use
-                shipment_info [shipment_identifier] = {
+                shipment_info[shipment_identifier] = {
                     "origin": origin,
                     "destination": destination,
                     "products": {}
@@ -118,10 +90,38 @@ class DatabaseConnector:
                 print(f"inserted product {count} from shipping_data_1")
                 count += 1
 
+    def insert_product_if_it_does_not_already_exist(self, product_name):
+        """Insert a new product into the database. If a product already exists in the database with the given name, ignore it."""
+        query = """
+                INSERT OR IGNORE INTO product (name)
+                VALUES (?);
+            """
+        self.cursor.execute(query, (product_name,))
+        self.connection.commit()
+
+    def insert_shipment(self, product_name, product_quantity, origin, destination):
+        """Insert a new shipment into the database."""
+        # collect the product id
+        query = """
+                SELECT id
+                FROM product
+                WHERE product.name = ?;
+            """
+        self.cursor.execute(query, (product_name,))
+        product_id = self.cursor.fetchone()[0]
+
+        # insert the shipment
+        query = """
+            INSERT INTO shipment (product_id, quantity, origin, destination)
+            VALUES (?, ?, ?, ?);
+            """
+        self.cursor.execute(query, (product_id, product_quantity, origin, destination))
+        self.connection.commit()
+
     def close(self):
         self.connection.close()
 
 if __name__ == '__main__':
     database_connector = DatabaseConnector("database/shipment_database.db")
     database_connector.populate("./data")
-    database_connector.close() 
+    database_connector.close()
