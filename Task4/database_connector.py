@@ -46,6 +46,22 @@ class DatabaseConnector:
     
     def insert_shipment(self, product_name, product_quantity, origin, destination):
         """Insert a new shipment into the database."""
+        # collect the product id
+        query = """
+                SELECT id
+                FROM product
+                WHERE product.name = ?;
+            """
+        self.cursor.execute(query, (product_name,))
+        product_id = self.cursor.fetchone()[0]
+
+        # insert the shipment
+        query = """
+            INSERT INTO shipment (product_id, quantity, origin, destination)
+            VALUES (?, ?, ?, ?);
+            """
+        self.cursor.execute(query, (product_id, product_quantity, origin, destination))
+        self.connection.commit()
 
     def populate_second_shipping_data(self, csv_reader_1, csv_reader_2):
         """Populate the database with data imported from the second and third spreadsheets."""
