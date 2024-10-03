@@ -10,4 +10,8 @@ October 2024
    operating modes and database connections.
  * Created an entity relationship diagram to design a new database accounting
    for all requirements provided by Walmart’s pet department.
+   
+------------
+
+
 ![Certificate](./Certificate.png)
