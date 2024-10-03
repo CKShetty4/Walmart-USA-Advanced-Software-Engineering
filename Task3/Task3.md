@@ -61,3 +61,34 @@
 - **Shipment ID** (foreign key referencing the Shipment entity)
 - **Product ID** (foreign key referencing the Product entity)
 - **Quantity**
+
+
+------------
+
+
+## Entity Relationships
+
+- A **Product** is associated with:
+  - **One Manufacturer** (one-to-one).
+  - **Multiple Animals** (one-to-many).
+
+- An **Animal** is associated with:
+  - **Multiple Products** (many-to-many).
+
+- A **Customer** can make:
+  - **Multiple Transactions** (one-to-many).
+
+- A **Transaction** is associated with:
+  - **One Customer** (one-to-one).
+  - **Multiple Products** (one-to-many).
+
+- A **Product** can be involved in:
+  - **Multiple Transactions** (many-to-many).
+
+- A **Shipment** is associated with:
+  - **One Origin Location** and **One Destination Location** (one-to-one).
+  - **Multiple Products** (one-to-many).
+
+- A **Product** can be involved in:
+  - **Multiple Shipments** (many-to-many).
+
